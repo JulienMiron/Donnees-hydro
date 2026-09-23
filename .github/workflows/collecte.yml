@@ -1,0 +1,48 @@
+name: Collecte
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # toutes les 6 heures (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::httr2
+            any::dplyr
+            any::readr
+            any::lubridate
+            any::purrr
+            any::tidyr
+            any::readxl
+
+      - name: Demande (Hydro-Québec)
+        run: Rscript R/collecte_demande.R
+
+      - name: Température (ECCC)
+        run: Rscript R/collecte_meteo.R
+        continue-on-error: true   # une panne d'ECCC ne doit pas bloquer la demande
+
+      - name: Jeu de données final
+        run: Rscript R/construire.R
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "Collecte $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git push
