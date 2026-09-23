@@ -13,14 +13,13 @@ suppressPackageStartupMessages({
 # HYPOTHÈSE à valider au changement d'heure du 1er novembre 2026 :
 #   "America/Toronto" = heure locale de l'Est AVEC changement d'heure
 #   "Etc/GMT+5"       = heure normale de l'Est fixe (UTC-5 toute l'année)
-# Le diagnostic affiché par R/construire.R permet de trancher.
+# Confirmé en septembre 2026 : heure locale avec changement d'heure.
 TZ_HQ <- "America/Toronto"
 
 TZ_LOCAL <- "America/Toronto"  # pour les variables calendaires
 
 URL_DEMANDE <- "https://www.hydroquebec.com/data/documents-donnees/donnees-ouvertes/json/demande.json"
 URL_ECCC    <- "https://api.weather.gc.ca/collections"
-URL_HISTO   <- "https://www.hydroquebec.com/data/documents-donnees/donnees-ouvertes/xlsx/historique-demande/%d-demande-electricite-quebec.xlsx"
 
 CHEMIN_DEMANDE_15   <- "data/brut/demande_15min.csv"
 CHEMIN_DEMANDE_HIST <- "data/brut/demande_historique_horaire.csv"

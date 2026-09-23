@@ -28,10 +28,13 @@ jobs:
             any::lubridate
             any::purrr
             any::tidyr
-            any::readxl
 
       - name: Demande (Hydro-Québec)
         run: Rscript R/collecte_demande.R
+
+      - name: Historique de la demande (API)
+        run: Rscript R/historique_demande.R
+        continue-on-error: true
 
       - name: Température (ECCC)
         run: Rscript R/collecte_meteo.R

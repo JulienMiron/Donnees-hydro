@@ -23,21 +23,11 @@ brut15 <- lire_brut(CHEMIN_DEMANDE_15)
 brut_h <- lire_brut(CHEMIN_DEMANDE_HIST)
 if (is.null(brut15) && is.null(brut_h)) stop("Aucune donnée de demande")
 
-# Diagnostic du fuseau : en heure locale, les jours de changement d'heure ont
-# 23 ou 25 heures dans l'historique, et des horodatages dupliqués ou manquants.
-if (!is.null(brut_h)) {
-  jours_anormaux <- brut_h |> count(jour = substr(date_hq, 1, 10)) |> filter(n != 24)
-  if (nrow(jours_anormaux) > 0) {
-    message("Jours de l'historique sans 24 heures (indice de changement d'heure) :")
-    print(jours_anormaux, n = 20)
-  }
-}
-
 demande <- list()
 
 if (!is.null(brut_h)) {
   demande$hist <- brut_h |>
-    transmute(heure_fin_utc = vers_utc(date_hq, occurrence),
+    transmute(heure_fin_utc = ymd_hms(heure_fin_utc, tz = "UTC"),
               demande_mw = as.numeric(demande_mw),
               n_obs_15min = NA_integer_,
               source_demande = "historique")
